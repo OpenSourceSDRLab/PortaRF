@@ -1,8 +1,12 @@
+![alt](https://github.com/OpenSourceSDRLab/PortaRF/blob/main/images/OpenSourceSDRLab-high%20resolution%20version.png)
+
 # PortaRF
 Custom Hardware and Firmware Bin Files for the PortaRF Gadget.
 
 # Introduction
 The PortaRF is an open-source hardware platform that combines the [HackRF One R10](https://github.com/greatscottgadgets/hackrf/tree/master/hardware/hackrf-one) and [PortaPack H4M](https://github.com/OpenSourceSDRLab/mayhem-firmware/tree/next/hardware/portapack_h4m) into a single Board. It supports the transmission and reception of radio signals ranging from 1 MHz to 6 GHz, rendering it an exceptionally versatile tool for RF exploration and development.  It is a portable, standalone device for signal analysis and transmission without requiring a computer.
+
+![alt](https://github.com/OpenSourceSDRLab/PortaRF/blob/main/images/09969ef1a2aa3e77349972c5e69b2ade.jpg)
 
 # Hardware Improvements
 1. Doubled flash storage capacity
