@@ -30,7 +30,6 @@ We have designed a brand new shell for the PortaRF and added many design element
 PortaRF incorporates voice-controlled interaction technology. Users can perform operations such as device activation, application switching, and system reboot through natural voice commands. This feature is particularly suitable for scenarios where hands are not available, providing additional convenience operations.
 
 # Applications
-
 <div class="editor_table_wrap">&nbsp;
 <table border="1" style="width: 81.0373%; height: 526px;">
 <tbody>
