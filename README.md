@@ -13,28 +13,28 @@ The PortaRF is an open-source hardware platform that combines the [HackRF One R1
 [OpenSourceSDRLab](https://opensourcesdrlab.com/products/portarf) official website.
 
 # Hardware Improvements
-1. Doubled flash storage capacity
+1. **Doubled flash storage capacity**.
 We have replaced the original W25Q80DVSSIQ with W25Q16DV SPI Flash chip, expanding the original firmware storage capacity from 1M byte to 2M byte. This provides a broader creative space for Mayhem firmware developers, enabling the implementation of more complex signal processing algorithms and functions.
 
-2. 4.0-inch IPS resistive touch screen
+2. **4.0-inch IPS resistive touch screen**.
 The screen has been upgraded to a 4.0-inch IPS full-view high-definition display. Compared with the original 3.2-inch non-IPS matte screen, it has made a significant improvement in color reproduction, viewing angle and touch accuracy. Whether it's spectrum analysis or parameter settings, the text is clearer and the operation is more precise.
 
-3. 3000mAh lithium battery system
+3. **3000mAh lithium battery system**.
 The battery capacity has been increased to 3000mAh, significantly extending the battery life. At the same time, an intelligent battery protection board has been used in this battery, providing protection against overcharging, overdischarging, short circuiting, and overcurrent. This lithium battery is produced by a legitimate factory with guaranteed quality.
 
-4. User-friendly hand-held directional keys
+4. **User-friendly hand-held directional keys**.
 PortaRF has added a gamepad-style directional button. It is particularly suitable for rapid directional operations in functions such as spectrum scanning and game applications. It will significantly enhance the direction control efficiency and comfort.
 
-5. Modular Expansion Board Design
+5. **Modular Expansion Board Design**.
 The expansion board adopts a Board to Board connector, a socket interface similar to the memory module, which is smaller in size and more stable in installation. This can optimize the internal space utilization.
 
-6. Light Guide Column LED Status Indication System
+6. **Light Guide Column LED Status Indication System**.
 PortaRF also incorporates the light guide column design, making the LED status lights more visible. Regardless of day or night, the equipment status is clearly visible.
 
-7. Nice shell design
+7. **Nice shell design**.
 We have designed a brand new shell for the PortaRF and added many design elements, such as the buckle of the shell, which makes the shell fit tightly. The slot of the memory card is designed with grooves, the SD card can be inserted and removed without the need for tools. The dual speaker sound hole design enables better sound output from the speakers.
 
-8. AI voice-assisted (Beta version)
+8. **AI voice-assisted (Beta version)**.
 PortaRF incorporates voice-controlled interaction technology. Users can perform operations such as device activation, application switching, and system reboot through natural voice commands. This feature is particularly suitable for scenarios where hands are not available, providing additional convenience operations.
 
 # Applications
