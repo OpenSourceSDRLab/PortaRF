@@ -12,6 +12,11 @@ The PortaRF is an open-source hardware platform that combines the [HackRF One R1
 # Where to buy
 [OpenSourceSDRLab](https://opensourcesdrlab.com/products/portarf) official website.
 
+# Videos
+[<img alt="HackRF Portapack Evolved? This is PortaRF" src="https://res.cloudinary.com/marcomontalbano/image/upload/v1759650939/video_to_markdown/images/youtube--LNKeIju5pRY-c05b58ac6eb4c4700831b2b3070cd403.jpg" width="701">](https://www.youtube.com/watch?v=LNKeIju5pRY)
+
+[<img alt="PortaRF - HackRF One and PortaPack H4M Combined Gadget for Mayhem Software Defined Radio" src="https://res.cloudinary.com/marcomontalbano/image/upload/v1759651419/video_to_markdown/images/youtube--UqoFG5f3fv4-c05b58ac6eb4c4700831b2b3070cd403.jpg" width="701">](https://www.youtube.com/watch?v=UqoFG5f3fv4)
+
 # Hardware Improvements
 1. **Doubled flash storage capacity**.
 We have replaced the original W25Q80DVSSIQ with W25Q16DV SPI Flash chip, expanding the original firmware storage capacity from 1M byte to 2M byte. This provides a broader creative space for Mayhem firmware developers, enabling the implementation of more complex signal processing algorithms and functions.
