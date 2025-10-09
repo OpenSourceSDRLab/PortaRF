@@ -13,9 +13,13 @@ The PortaRF is an open-source hardware platform that combines the [HackRF One R1
 [OpenSourceSDRLab](https://opensourcesdrlab.com/products/portarf) official website.
 
 # Videos
+[![PortaRF - A NEW HackRF PortaPack Combo In One Single Board](https://img.youtube.com/vi/fDFtJgR6TcE/0.jpg)](https://www.youtube.com/watch?v=fDFtJgR6TcE)
+
 [![HackRF Portapack Evolved? This is PortaRF](https://img.youtube.com/vi/LNKeIju5pRY/0.jpg)](https://www.youtube.com/watch?v=LNKeIju5pRY)
 
 [![HackRF Portapack Evolved? This is PortaRF](https://img.youtube.com/vi/UqoFG5f3fv4/0.jpg)](https://www.youtube.com/watch?v=UqoFG5f3fv4)
+
+[![PortaRF Quick Look](https://img.youtube.com/vi/y4wdKojJfC0/0.jpg)](https://www.youtube.com/watch?v=y4wdKojJfC0)
 
 [![The NEW PortaRF - A HackRF and Portapak with Mayhem in one unit!](https://img.youtube.com/vi/bMyMGJQeS8A/0.jpg)](https://www.youtube.com/watch?v=bMyMGJQeS8A)
 
