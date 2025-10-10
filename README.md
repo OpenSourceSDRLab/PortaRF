@@ -17,6 +17,8 @@ Here is a news report about the PortaRF from [RTL-SDR.com](https://www.rtl-sdr.c
 # Videos
 [![PortaRF - A NEW HackRF PortaPack Combo In One Single Board](https://img.youtube.com/vi/fDFtJgR6TcE/0.jpg)](https://www.youtube.com/watch?v=fDFtJgR6TcE)
 
+[![Porta RF Deep Dive](https://img.youtube.com/vi/B1F76LqbRrY/0.jpg)](https://www.youtube.com/watch?v=B1F76LqbRrY)
+
 [![HackRF Portapack Evolved? This is PortaRF](https://img.youtube.com/vi/LNKeIju5pRY/0.jpg)](https://www.youtube.com/watch?v=LNKeIju5pRY)
 
 [![HackRF Portapack Evolved? This is PortaRF](https://img.youtube.com/vi/UqoFG5f3fv4/0.jpg)](https://www.youtube.com/watch?v=UqoFG5f3fv4)
