@@ -115,19 +115,28 @@ void ViewWavView::on_pos_sample_changed() {
 void ViewWavView::load_wav(std::filesystem::path file_path) {
     uint32_t average;
 
+    // WAV 文件地址
     wav_file_path = file_path;
 
+    // 展示文件名称
     text_filename.set(file_path.filename().string());
+
+    // 预计播放的的总时长
     auto ms_duration = wav_reader->ms_duration();
     text_duration.set(unit_auto_scale(ms_duration, 2, 3) + "s");
-
+    // 文件从头开始
     wav_reader->rewind();
+
 
     text_samplerate.set(to_string_dec_uint(wav_reader->sample_rate()) + "Hz");
     text_bits_per_sample.set(to_string_dec_uint(wav_reader->bits_per_sample(), 2));
-    text_title.set(wav_reader->title());
+    
+    // text_title.set(wav_reader->title());
+    text_title.set(file_path.filename().string());
 
     // Fill amplitude buffer, world's worst downsampling
+
+    // 绘制波形图
     uint64_t skip = wav_reader->sample_count() / (screen_width * subsampling_factor);
     uint8_t bits_per_sample = wav_reader->bits_per_sample();
 
@@ -150,6 +159,7 @@ void ViewWavView::load_wav(std::filesystem::path file_path) {
         amplitude_buffer[i] = average / subsampling_factor;
     }
 
+    // 重置控制操作
     reset_controls();
     update_scale(1);
 }
@@ -219,12 +229,10 @@ void ViewWavView::start_playback() {
     }
 
     playback_in_progress = true;
-
     button_play.set_bitmap(&bitmap_stop);
 
     sample_rate = reader->sample_rate();
     bits_per_sample = reader->bits_per_sample();
-
     progressbar.set_max(reader->sample_count());
 
     replay_thread = std::make_unique<ReplayThread>(
@@ -234,7 +242,7 @@ void ViewWavView::start_playback() {
         [](uint32_t return_code) {
             ReplayThreadDoneMessage message{return_code};
             EventDispatcher::send_message(message);
-        });
+    });
 
     baseband::set_audiotx_config(
         1536000 / 20,     // Rate of sending progress updates
@@ -248,10 +256,15 @@ void ViewWavView::start_playback() {
         false,            // USB
         false             // LSB
     );
+
     baseband::set_sample_rate(sample_rate);
     transmitter_model.set_sampling_rate(1536000);
 
     audio::output::start();
+
+    // 主动设置音量到当前UI显示的值
+    receiver_model.set_normalized_headphone_volume(field_volume.value());
+    field_volume.set_value(field_volume.value());
 }
 
 void ViewWavView::on_playback_progress(const uint32_t progress) {
@@ -271,53 +284,71 @@ ViewWavView::ViewWavView(
     baseband::run_prepared_image(portapack::memory::map::m4_code.base());
     wav_reader = std::make_unique<WAVFileReader>();
 
-    add_children({&labels,
-                  &text_filename,
-                  &text_samplerate,
-                  &text_title,
-                  &text_duration,
-                  &text_bits_per_sample,
-                  &button_open,
-                  &button_play,
-                  &waveform,
-                  &progressbar,
-                  &field_pos_seconds,
-                  &field_pos_milliseconds,
-                  &field_pos_samples,
-                  &field_scale,
-                  &field_cursor_a,
-                  &field_cursor_b,
-                  &text_delta,
-                  &field_volume});
+    add_children({
+        &labels,
+        &text_filename,
+        &text_samplerate,
+        &text_title,
+        &text_duration,
+        &text_bits_per_sample,
+        // 用于文件加载
+        &button_open,
+        // 用于文件播放
+        &button_play,
+        &waveform,
+        &progressbar,
+        &field_pos_seconds,
+        &field_pos_milliseconds,
+        &field_pos_samples,
+        &field_scale,
+        &field_cursor_a,
+        &field_cursor_b,
+        &text_delta,
+        &field_volume
+    });
 
     reset_controls();
 
     button_open.on_select = [this, &nav](Button&) {
+        // 加载WAV格式文件
         auto open_view = nav.push<FileLoadView>(".WAV");
+        // 当加载的页面变化
         open_view->on_changed = [this, &nav](std::filesystem::path file_path) {
             // Can't show new dialogs in an on_changed handler, so use continuation.
-            nav.set_on_pop([this, &nav, file_path]() {
+            nav.set_on_pop([this, &nav, file_path]() 
+            {
+                // 打开WAV格式文件并且加载文件信息
                 if (!wav_reader->open(file_path)) {
                     file_error();
                     return;
                 }
+                // 如果格式不匹配就展示了
                 if ((wav_reader->channels() != 1) || ((wav_reader->bits_per_sample() != 8) && (wav_reader->bits_per_sample() != 16))) {
                     nav_.display_modal("Error", "Wrong format.\nWav viewer only accepts\n8 or 16-bit mono files.");
                     return;
+                
                 }
+                // 加载WAV波形图片
                 load_wav(file_path);
+
                 field_pos_seconds.focus();
             });
         };
     };
 
-    field_volume.set_value(field_volume.value());
+    field_volume.set_value(99);
 
     button_play.on_select = [this, &nav](ImageButton&) {
         if (this->is_active())
+        {
             stop();
+        }    
         else
+        {
+            // 开启播放
             start_playback();
+            
+        }
     };
 
     field_scale.on_change = [this](int32_t value) {

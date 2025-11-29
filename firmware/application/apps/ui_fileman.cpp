@@ -777,7 +777,8 @@ FileManagerView::FileManagerView(
                 }
                 push_dir(get_selected_entry().path);
                 return;
-            } else if (handle_file_open()) {
+            } 
+            else if (handle_file_open()) {
                 return;
             }
         }

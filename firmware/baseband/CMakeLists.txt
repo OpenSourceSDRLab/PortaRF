@@ -492,6 +492,12 @@ set(MODE_CPPSRC
 )
 DeclareTargets(PWTH weather)
 
+### Audio transmit
+set(MODE_CPPSRC
+	proc_audiotx.cpp
+)
+DeclareTargets(PATX audio_tx)
+
 set(MODE_FLAGS "-Os")
 
 ### Flash Utility
@@ -685,10 +691,6 @@ DeclareTargets(PNOA noaaapt_rx)
 
 ### Audio transmit
 
-set(MODE_CPPSRC
-	proc_audiotx.cpp
-)
-DeclareTargets(PATX audio_tx)
 
 
 ### HackRF "factory" firmware

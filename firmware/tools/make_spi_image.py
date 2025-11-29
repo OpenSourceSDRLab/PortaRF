@@ -207,7 +207,8 @@ except Exception as e:
 #^^^^^^^^external app linker script address check worker^^^^^^^^
 
 
-spi_size = 1048576
+# spi_size = 1048576
+spi_size = 2097152
 
 images = (
     {
