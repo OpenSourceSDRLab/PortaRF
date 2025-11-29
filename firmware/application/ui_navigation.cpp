@@ -63,6 +63,11 @@
 #include "ui_battinfo.hpp"
 #include "ui_external_items_menu_loader.hpp"
 
+// 添加一个mp3播放器
+#include "ui_mp3player.hpp"
+// 一个有关I2C升级控件
+#include "ui_esp32update.hpp"
+
 #include "ais_app.hpp"
 #include "analog_audio_app.hpp"
 // #include "ble_comm_app.hpp"
@@ -141,6 +146,9 @@ const NavigationView::AppList NavigationView::appList = {
     {"rdstx", "RDS", TX, ui::Color::green(), &bitmap_icon_rds, new ViewFactory<RDSView>()},
     {"touchtune", "TouchTune", TX, ui::Color::green(), &bitmap_icon_touchtunes, new ViewFactory<TouchTunesView>()},
     {"signalgen", "SignalGen", TX, Color::green(), &bitmap_icon_cwgen, new ViewFactory<SigGenView>()},
+    {"mp3player", "Mp3Player", TX, Color::red(), &bitmap_icon_remote, new ViewFactory<mp3player>()},
+    // GAME
+    {"espupdate", "espupdate", GAMES,Color::red(), &bitmap_icon_remote, new ViewFactory<esp32Update>()},
     /* TRX ********************************************************************/
     {"microphone", "Mic", TRX, Color::green(), &bitmap_icon_microphone, new ViewFactory<MicTXView>()},
     /* UTILITIES *************************************************************/
@@ -159,7 +167,8 @@ const NavigationView::AppMap NavigationView::appMap = generate_app_map(Navigatio
 
 bool NavigationView::StartAppByName(const char* name) {
     home(false);
-
+    // 根据实际ID进行查找
+    // 比如audip
     auto it = appMap.find(name);
     if (it != appMap.end()) {
         push_view(std::unique_ptr<View>(it->second.viewFactory->produce(*this)));

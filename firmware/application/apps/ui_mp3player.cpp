@@ -1,27 +1,4 @@
-/*
- * Copyright (C) 2015 Jared Boone, ShareBrained Technology, Inc.
- * Copyright (C) 2018 Furrtek
- *
- * This file is part of PortaPack.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street,
- * Boston, MA 02110-1301, USA.
- */
-
-#include "sd_mp3player.hpp"
-
+#include "ui_mp3player.hpp"
 #include "portapack.hpp"
 #include <cstring>
 
@@ -31,13 +8,14 @@
 
 using namespace portapack;
 
+namespace ui
+{
 
-namespace ui::external_app::mp3player_sd  {
-
-    mp3player_sd::mp3player_sd(NavigationView& nav): nav_(nav) 
+    mp3player::mp3player(NavigationView &nav) // Application Main
     {
+        // 增加一个远端运行的镜像
         baseband::run_image(portapack::spi_flash::image_tag_audio_tx);
-
+        // App code
         add_children({
             &labels,
             &text_current,
@@ -194,18 +172,17 @@ namespace ui::external_app::mp3player_sd  {
         };
     }
 
-
-    void mp3player_sd::set_ready() 
+    void mp3player::set_ready() 
     {
         ready_signal = true;
     }
     
-    const music_file_entry& mp3player_sd::get_selected_entry() const {
+    const music_file_entry& mp3player::get_selected_entry() const {
         auto it = entry_list.begin();
         if (menu_view.highlighted_index() >= 1) std::advance(it, menu_view.highlighted_index());
         return *it;
     }
-    void mp3player_sd::reflash_special_widget()
+    void mp3player::reflash_special_widget()
     {
         labels.set_dirty();
         text_current.set_dirty();
@@ -223,14 +200,14 @@ namespace ui::external_app::mp3player_sd  {
         play_info.set_dirty();
         button_start.set_dirty();
     }
-    void mp3player_sd::focus()
+    void mp3player::focus()
     {
         // menu_view.focus();
         button_start.focus();
     }
 
     // 完全模拟ui_fileman实现
-    void mp3player_sd::load_directory_contents()
+    void mp3player::load_directory_contents()
     {
         // 设置当前页面名称
         text_current.set(current_path.string());
@@ -268,7 +245,7 @@ namespace ui::external_app::mp3player_sd  {
         }
     }
 
-    void mp3player_sd::refresh_list()
+    void mp3player::refresh_list()
     {
         // 这个set_dirty很关键，需要进行重新渲染
         set_dirty();
@@ -291,7 +268,7 @@ namespace ui::external_app::mp3player_sd  {
     }
 
 
-    void mp3player_sd::handle_replay_thread_done(const uint32_t return_code) {
+    void mp3player::handle_replay_thread_done(const uint32_t return_code) {
         
         progressbar.set_value(0);
         if (return_code == ReplayThread::READ_ERROR)
@@ -304,7 +281,7 @@ namespace ui::external_app::mp3player_sd  {
         }
     }
 
-    void mp3player_sd::on_playback_progress(const uint32_t progress) {
+    void mp3player::on_playback_progress(const uint32_t progress) {
         // play_info.set("now : "+std::to_string(progress));
         progressbar.set_value(progress);
         if(sample_rate > 0)
@@ -315,7 +292,7 @@ namespace ui::external_app::mp3player_sd  {
         }
     }
 
-    void mp3player_sd::on_focus()
+     void mp3player::on_focus()
     {
         View::on_focus();  // 必须先调用基类方法！
         // 标记整个view为dirty
@@ -324,14 +301,14 @@ namespace ui::external_app::mp3player_sd  {
         reflash_special_widget();
     }
     
-    void mp3player_sd::on_blur()
+    void mp3player::on_blur()
     {
         View::on_blur();
         // 当mp3player失去焦点时，也重绘所有控件
         reflash_special_widget();
     }
 
-    void mp3player_sd::paint(Painter& painter)
+    void mp3player::paint(Painter& painter)
     {
         // 先调用基类paint绘制背景
         View::paint(painter);
@@ -339,12 +316,12 @@ namespace ui::external_app::mp3player_sd  {
         reflash_special_widget();
     }
 
-    void mp3player_sd::update()                   // Every time you get a DisplayFrameSync message this function will be ran
+    void mp3player::update()                   // Every time you get a DisplayFrameSync message this function will be ran
     {
          // Message code
     }
 
-    void mp3player_sd::stop()
+    void mp3player::stop()
     {
         if((bool)replay_thread)
         {
@@ -357,10 +334,9 @@ namespace ui::external_app::mp3player_sd  {
         button_start.set_bitmap(&bitmap_play);
     }
 
-    mp3player_sd::~mp3player_sd()
+    mp3player::~mp3player()
     {
         stop();
         baseband::shutdown();
     }
-
 }

@@ -264,7 +264,7 @@ set(EXTCPPSRC
 	#adult_toys_controller  144 bytes 
 	external/adult_toys_controller/main.cpp
 	external/adult_toys_controller/ui_adult_toys_controller.cpp
-
+	
 	external/sd_mp3player/main.cpp
 	external/sd_mp3player/sd_mp3player.cpp
 )
