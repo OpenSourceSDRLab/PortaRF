@@ -21,7 +21,9 @@ Here is a news report about the PortaRF from [RTL-SDR.com](https://www.rtl-sdr.c
 
 [![HackRF Portapack Evolved? This is PortaRF](https://img.youtube.com/vi/LNKeIju5pRY/0.jpg)](https://www.youtube.com/watch?v=LNKeIju5pRY)
 
-[![HackRF Portapack Evolved? This is PortaRF](https://img.youtube.com/vi/UqoFG5f3fv4/0.jpg)](https://www.youtube.com/watch?v=UqoFG5f3fv4)
+[![PortaRF - HackRF One and PortaPack H4M Combined Gadget for Mayhem Software Defined Radio](https://img.youtube.com/vi/UqoFG5f3fv4/0.jpg)](https://www.youtube.com/watch?v=UqoFG5f3fv4)
+
+[![PortaRF - Utilizing the AI Voice-assisted device control function](https://img.youtube.com/vi/Xrx7OxZS-OY/0.jpg)](https://www.youtube.com/watch?v=Xrx7OxZS-OY))
 
 [![PortaRF Quick Look](https://img.youtube.com/vi/y4wdKojJfC0/0.jpg)](https://www.youtube.com/watch?v=y4wdKojJfC0)
 
