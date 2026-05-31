@@ -36,9 +36,8 @@ namespace ui::external_app::mp3player_sd  {
 
     mp3player_sd::mp3player_sd(NavigationView& nav): nav_(nav) 
     {
-        // baseband::run_image(portapack::spi_flash::image_tag_audio_tx);
-        // 这里是1MiB可以用的镜像大小
-        baseband::run_prepared_image(portapack::memory::map::m4_code.base());
+        baseband::run_image(portapack::spi_flash::image_tag_audio_tx);
+
         add_children({
             &labels,
             &text_current,

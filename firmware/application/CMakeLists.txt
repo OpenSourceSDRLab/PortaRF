@@ -277,6 +277,7 @@ set(CPPSRC
 	apps/ui_aprs_rx.cpp
 	apps/ui_aprs_tx.cpp
 	apps/ui_battinfo.cpp
+	apps/ui_low_battery.cpp
 	apps/ui_bmp_file_viewer.cpp
 	apps/ui_btle_rx.cpp
 	apps/ui_debug.cpp
@@ -305,6 +306,9 @@ set(CPPSRC
 	apps/ui_standalone_view.cpp
 	apps/ui_subghzd.cpp
 	# apps/ui_test.cpp
+	apps/ui_mp3player.cpp
+	apps/ui_esp32update.cpp
+
 	apps/ui_text_editor.cpp
 	apps/ui_touch_calibration.cpp
 	apps/ui_touchtunes.cpp

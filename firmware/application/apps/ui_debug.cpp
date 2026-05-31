@@ -427,6 +427,7 @@ void DebugMenuView::on_populate() {
         {"Touch Test", ui::Theme::getInstance()->fg_darkcyan->foreground, &bitmap_icon_notepad, [this]() { nav_.push<DebugScreenTest>(); }},
         {"Reboot", ui::Theme::getInstance()->fg_darkcyan->foreground, &bitmap_icon_setup, [this]() { nav_.push<DebugReboot>(); }},
         {"Ext Module", ui::Theme::getInstance()->fg_darkcyan->foreground, &bitmap_icon_peripherals_details, [this]() { nav_.push<ExternalModuleView>(); }},
+        {"AUDIO DEBUG", ui::Theme::getInstance()->fg_yellow->foreground, &bitmap_icon_peripherals, [this]() { nav_.push<AudioDiagView>(); }},
     });
 
     if (i2cdev::I2CDevManager::get_dev_by_model(I2C_DEVMDL::I2CDEVMDL_MAX17055)) {
@@ -586,5 +587,85 @@ void DebugScreenTest::paint(Painter& painter) {
 void DebugLCRView::focus() {
         button_exit.focus();
 }*/
+
+
+AudioDiagView::AudioDiagView(NavigationView& nav) {
+    add_children({
+        &console,
+        &button_probe,
+        &button_write,
+        &button_stress,
+        &button_done,
+    });
+
+    button_done.on_select = [&nav](Button&) { nav.pop(); };
+
+    button_probe.on_select  = [this](Button&) { test_probe(); };
+    button_write.on_select  = [this](Button&) { test_write_once(); };
+    button_stress.on_select = [this](Button&) { test_stress(); };
+
+    console.write("Audio I2C diag ready.\n");
+}
+
+
+void AudioDiagView::focus() {
+    button_done.focus();
+}
+
+
+void AudioDiagView::test_probe() 
+{
+    
+    console.clear(true);
+    const bool wm = portapack::i2c0.probe(0x1a, 50);
+    const bool ak = portapack::i2c0.probe(0x12, 50);
+    if (wm) 
+        console.write("Probe: WM8731 (0x1a) OK\n");
+    if (ak) 
+        console.write("Probe: AK4951 (0x12) OK\n");
+    if (!wm && !ak) 
+        console.write("Probe: FAIL (no codec ack)\n");
+}
+
+void AudioDiagView::test_write_once() 
+{
+    // 交替写不同音量，避免“同值重复写”导致你误判
+    static bool flip = false;
+    flip = !flip;
+
+    const auto v = flip ? -20.0_dB : -50.0_dB;
+    const bool ok = audio::headphone::set_volume(v);
+    console.clear(true);
+    console.write(std::string("Write volume ") +
+                  (flip ? "-20dB" : "-50dB") +
+                  (ok ? " OK\n" : " FAIL\n"));
+}
+
+void AudioDiagView::test_stress() 
+{   
+    // 这里也可以进行设置一下测试
+    // i2cdev::I2CDevManager::set_pause_updates(true);
+    uint32_t ok_cnt = 0;
+    uint32_t fail_cnt = 0;
+
+    for (int i = 0; i < 200; i++) {
+        const auto v = (i & 1) ? -20.0_dB : -50.0_dB;
+        const bool ok = audio::headphone::set_volume(v);
+        if (ok) 
+            ok_cnt++; 
+        else 
+            fail_cnt++;
+        // 给 I2C 总线一点点时间，避免把系统其它任务饿死
+        chThdSleepMilliseconds(2);
+    }
+    // i2cdev::I2CDevManager::set_pause_updates(false);
+
+    console.clear(true);
+    console.write("Stress done: OK=" + to_string_dec_uint(ok_cnt) +
+                  " FAIL=" + to_string_dec_uint(fail_cnt) + "\n");
+    
+    
+}
+
 
 } /* namespace ui */

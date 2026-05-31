@@ -44,6 +44,18 @@ std::vector<I2DevListElement> I2CDevManager::devlist;
 Mutex I2CDevManager::mutex_list{};
 EventDispatcher* I2CDevManager::_eventDispatcher;
 
+// 增添部分代码解决I2C冲突问题
+bool I2CDevManager::pause_updates = false;
+
+// 添加实现：
+void I2CDevManager::set_pause_updates(bool pause) {
+    pause_updates = pause;
+}
+bool I2CDevManager::get_pause_updates() {
+    return pause_updates;
+}
+
+
 /*
     DEAR DEVELOPERS!
     IF YOU WANT TO ADD NEW DERIVERS, PUT IT'S I2C ADDRESS AND INIT PART HERE.
@@ -317,25 +329,75 @@ void I2CDevManager::create_thread() {
     thread = chThdCreateFromHeap(NULL, 2048, NORMALPRIO, I2CDevManager::timer_fn, nullptr);
 }
 
+/// @brief source code用于处理 I2C设备的扫描
+/// @param arg 
+/// @return 
+// msg_t I2CDevManager::timer_fn(void* arg) {
+//     (void)arg;
+//     uint16_t curr_timer = 0;  // seconds since thread start
+//     while (1) {
+//         systime_t start_time = chTimeNow();
+//         bool changed = false;
+//         // check if i2c scan needed
+//         if (force_scan || (scan_interval != 0 && curr_timer % scan_interval == 0)) {
+//             changed = changed | scan();
+//             force_scan = false;
+//         }
+//         for (size_t i = 0; i < devlist.size(); i++) {
+//             if (devlist[i].addr != 0 && devlist[i].dev && devlist[i].dev->query_interval != 0) {
+//                 if ((curr_timer % devlist[i].dev->query_interval) == 0) {  // only if it is device's interval
+//                     devlist[i].dev->update();                              // updates it's data, and broadcasts it. if there is any error it will handle in it, and later we can remove it
+//                 }
+//             }
+//         }
+
+//         // remove all unneeded items
+//         chMtxLock(&mutex_list);
+//         size_t cnt = devlist.size();
+//         devlist.erase(std::remove_if(devlist.begin(), devlist.end(), [](const I2DevListElement& x) {
+//                           if (x.addr == 0) return true;
+//                           if (x.dev && x.dev->need_del == true) return true;  // self destruct on too many errors
+//                           return false;                                       // won't remove the unidentified ones, so we can list them, and not trying all the time with them
+//                       }),
+//                       devlist.end());
+//         chMtxUnlock();
+//         if (cnt != devlist.size()) changed = true;
+
+//         if (changed) {
+//             I2CDevListChangedMessage msg{};
+//             EventDispatcher::send_message(msg);
+//         }
+//         systime_t end_time = chTimeNow();
+//         systime_t delta = (end_time > start_time) ? end_time - start_time : 100;  // wont calculate overflow, just guess.
+//         if (delta > 950) delta = 950;                                             // ensure minimum 50 milli sleep
+
+//         chThdSleepMilliseconds(1000 - delta);  // 1sec timer
+//         ++curr_timer;
+//     }
+//     return 0;
+// }
+
 msg_t I2CDevManager::timer_fn(void* arg) {
     (void)arg;
     uint16_t curr_timer = 0;  // seconds since thread start
     while (1) {
         systime_t start_time = chTimeNow();
         bool changed = false;
-        // check if i2c scan needed
-        if (force_scan || (scan_interval != 0 && curr_timer % scan_interval == 0)) {
-            changed = changed | scan();
-            force_scan = false;
-        }
-        for (size_t i = 0; i < devlist.size(); i++) {
-            if (devlist[i].addr != 0 && devlist[i].dev && devlist[i].dev->query_interval != 0) {
-                if ((curr_timer % devlist[i].dev->query_interval) == 0) {  // only if it is device's interval
-                    devlist[i].dev->update();                              // updates it's data, and broadcasts it. if there is any error it will handle in it, and later we can remove it
+        if(!pause_updates)
+        {
+            // check if i2c scan needed
+            if (force_scan || (scan_interval != 0 && curr_timer % scan_interval == 0)) {
+                changed = changed | scan();
+                force_scan = false;
+            }
+            for (size_t i = 0; i < devlist.size(); i++) {
+                if (devlist[i].addr != 0 && devlist[i].dev && devlist[i].dev->query_interval != 0) {
+                    if ((curr_timer % devlist[i].dev->query_interval) == 0) {  // only if it is device's interval
+                        devlist[i].dev->update();                              // updates it's data, and broadcasts it. if there is any error it will handle in it, and later we can remove it
+                    }
                 }
             }
         }
-
         // remove all unneeded items
         chMtxLock(&mutex_list);
         size_t cnt = devlist.size();
@@ -361,6 +423,7 @@ msg_t I2CDevManager::timer_fn(void* arg) {
     }
     return 0;
 }
+
 
 };  // namespace i2cdev
 

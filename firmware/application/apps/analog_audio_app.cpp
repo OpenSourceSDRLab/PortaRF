@@ -31,6 +31,7 @@
 #include "ui_freqman.hpp"
 #include "utility.hpp"
 #include "radio.hpp"
+#include "i2cdevmanager.hpp"
 
 using namespace portapack;
 using namespace tonekey;
@@ -554,6 +555,7 @@ void AnalogAudioView::on_freqchg(int64_t freq) {
     field_frequency.set_value(freq);
 }
 
+// 增加此处代码是为了与拓展板进行语音交互
 void AnalogAudioView::public_for_on_freqchg(int64_t value)
 {
     on_freqchg(value);

@@ -105,7 +105,7 @@ class BLETxView : public View {
     ~BLETxView();
 
     void set_parent_rect(const Rect new_parent_rect) override;
-    void paint(Painter&) override{};
+    void paint(Painter&) override {};
 
     void focus() override;
 
@@ -128,6 +128,7 @@ class BLETxView : public View {
     void on_tx_progress(const bool done, uint32_t progress);
     void on_random_data_change(std::string value);
     void update_current_packet(BLETxPacket packet, uint32_t currentIndex);
+    static OptionsField::options_t build_channel_options();
 
     NavigationView& nav_;
     TxRadioState radio_state_{
@@ -152,8 +153,8 @@ class BLETxView : public View {
 
     int16_t timer_count{0};
     int16_t timer_period{1};
-    int16_t auto_channel_counter = 0;
-    int16_t auto_channel_period{6};
+    uint8_t auto_channel_start_number = 37;
+    uint8_t auto_channel_send_count = 0;
 
     bool repeatLoop = false;
     uint32_t packet_counter{0};
@@ -175,7 +176,6 @@ class BLETxView : public View {
     std::vector<uint16_t> markedBytes{};
     CursorPos cursor_pos{};
     uint8_t marked_counter = 0;
-    uint8_t advCount = 0;
 
     static constexpr uint8_t mac_address_size_str{12};
     static constexpr uint8_t max_packet_size_str{62};
@@ -241,10 +241,7 @@ class BLETxView : public View {
     OptionsField options_channel{
         {11 * 8, 6 * 8},
         5,
-        {{"Ch.37 ", 37},
-         {"Ch.38", 38},
-         {"Ch.39", 39},
-         {"Auto", 40}}};
+        {}};
 
     OptionsField options_adv_type{
         {17 * 8, 6 * 8},
