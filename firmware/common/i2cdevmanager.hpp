@@ -40,7 +40,7 @@ namespace i2cdev {
 // The device class. You'll derive your from this. Override init() and update();
 class I2cDev {
    public:
-    virtual ~I2cDev(){};
+    virtual ~I2cDev() {};
     virtual bool init(uint8_t addr) = 0;  // returns true if it is that that device we are looking for.
     virtual void update() = 0;            // override this, and you'll be able to query your device and broadcast the result to the system
 
@@ -95,7 +95,14 @@ class I2CDevManager {
     static void setEventDispatcher(EventDispatcher* ed) { _eventDispatcher = ed; }
     static EventDispatcher* get_event_dispatcher() { return _eventDispatcher; }
 
+    // true=暂停设备轮询，减少与 Codec 争用
+    static void set_pause_updates(bool pause);  
+    static bool get_pause_updates();
+
    private:
+
+    static bool pause_updates;
+
     static uint16_t scan_interval;
     static bool force_scan;  // if set to true, on hte next run it'll do an i2c scan, ONCE
     static std::vector<I2DevListElement> devlist;

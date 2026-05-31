@@ -643,6 +643,44 @@ static constexpr Bitmap bitmap_icon_batt_text{
     {16, 16},
     bitmap_icon_batt_text_data};
 
+static constexpr uint8_t bitmap_icon_low_battery_data[] = {
+    0x00,
+    0x00,
+    0x80,
+    0x00,
+    0xC0,
+    0x01,
+    0xE0,
+    0x03,
+    0xF0,
+    0x07,
+    0xB8,
+    0x0F,
+    0x1C,
+    0x1F,
+    0x0E,
+    0x3E,
+    0x1C,
+    0x3C,
+    0x38,
+    0x1E,
+    0x70,
+    0x0F,
+    0xE0,
+    0x03,
+    0xC0,
+    0x01,
+    0x80,
+    0x01,
+    0xC0,
+    0x00,
+    0x20,
+    0x00,
+};
+static constexpr Bitmap bitmap_icon_low_battery{
+    {16, 16},
+    bitmap_icon_low_battery_data};
+
 static constexpr uint8_t bitmap_icon_bht_data[] = {
     0x00,
     0x00,

@@ -204,6 +204,7 @@ class SystemStatusView : public View {
     static constexpr auto default_title = "";
     bool batt_was_inited = false;  // if the battery was off on tart, but later turned on.
     bool batt_info_up = false;     // to prevent show multiple batt info dialog
+    bool low_battery_up = false;   // prevent duplicate low battery pages
 
     NavigationView& nav_;
 
@@ -262,6 +263,13 @@ class SystemStatusView : public View {
         Theme::getInstance()->bg_dark->background,
         Theme::getInstance()->fg_light->foreground,
         Theme::getInstance()->bg_dark->background};
+    
+        
+    ImageButton button_low_battery{
+        {0, 0, 2 * 8, 1 * 16},
+        &bitmap_icon_low_battery,
+        Theme::getInstance()->warning_dark->foreground,
+        Theme::getInstance()->bg_dark->background};
 
     ImageButton button_camera{
         {0, 0, 2 * 8, 1 * 16},
@@ -308,6 +316,7 @@ class SystemStatusView : public View {
     void rtc_battery_workaround();
     void on_battery_data(const BatteryStateMessage* msg);
     void on_battery_details();
+    void on_low_battery();
 
     MessageHandlerRegistration message_handler_refresh{
         Message::ID::StatusRefresh,
@@ -331,7 +340,7 @@ class InformationView : public View {
     bool firmware_checksum_error();
 
    private:
-    static constexpr auto version_string = "v2.3.1"; // This is commented out as we are now setting the version via ENV (VERSION_STRING=v1.0.0)
+    static constexpr auto version_string = "v2.3.2"; // This is commented out as we are now setting the version via ENV (VERSION_STRING=v1.0.0)
     NavigationView& nav_;
 
     Rectangle backdrop{
@@ -423,6 +432,7 @@ class SystemMenuView : public BtnGridView {
     void hackrf_mode(NavigationView& nav);
 };
 
+// 相当于整个主页面
 class SystemView : public View {
    public:
     SystemView(
@@ -439,11 +449,15 @@ class SystemView : public View {
 
    private:
     uint8_t overlay_active{0};
-
+    // 顶部的窗体
     SystemStatusView status_view{navigation_view};
+    // 底部的窗体
     InformationView info_view{navigation_view};
+    // DFU按键显示的窗体
     DfuMenu overlay{navigation_view};
+    // DFU按键显示的窗体
     DfuMenu2 overlay2{navigation_view};
+
     NavigationView navigation_view{};
     Context& context_;
 };

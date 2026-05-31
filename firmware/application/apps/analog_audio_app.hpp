@@ -221,7 +221,7 @@ class AnalogAudioView : public View {
 
     uint8_t get_previous_zoom_option();
     void set_previous_zoom_option(uint8_t zoom);
-
+    // 添加此处为了语音交互
     void public_for_on_freqchg(int64_t value);
 
    private:
@@ -327,8 +327,7 @@ class AnalogAudioView : public View {
         [this](const Message* p) {
             const auto message = *reinterpret_cast<const CodedSquelchMessage*>(p);
             this->handle_coded_squelch(message.value);
-        }
-    };
+        }};
 
     MessageHandlerRegistration message_handler_freqchg{
         Message::ID::FreqChangeCommand,

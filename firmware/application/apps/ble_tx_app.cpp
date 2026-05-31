@@ -41,6 +41,31 @@ using namespace portapack;
 using namespace modems;
 namespace fs = std::filesystem;
 
+namespace {
+
+constexpr uint8_t k_ble_auto_channel_value = 40;
+constexpr size_t k_ble_auto_channel_option_index = 3;
+constexpr uint8_t k_ble_total_channel_count = 40;
+
+uint8_t get_next_ble_channel_number(const uint8_t channel_number) {
+    switch (channel_number) {
+        case 37:
+            return 38;
+        case 38:
+            return 39;
+        case 39:
+            return 0;
+        case 0 ... 35:
+            return channel_number + 1;
+        case 36:
+            return 37;
+        default:
+            return 37;
+    }
+}
+
+}  // namespace
+
 void BLELoggerTx::log_raw_data(const std::string& data) {
     log_file.write_entry(data);
 }
@@ -153,6 +178,27 @@ void BLETxView::focus() {
     button_open.focus();
 }
 
+OptionsField::options_t BLETxView::build_channel_options() {
+    OptionsField::options_t options;
+    options.reserve(k_ble_total_channel_count + 1);
+
+    options.emplace_back("Ch37", 37);
+    options.emplace_back("Ch38", 38);
+    options.emplace_back("Ch39", 39);
+    options.emplace_back("Auto", k_ble_auto_channel_value);
+
+    for (uint8_t channel = 0; channel < 37; ++channel) {
+        std::string name{"Ch"};
+        if (channel < 10) {
+            name += '0';
+        }
+        name += to_string_dec_uint(channel);
+        options.emplace_back(std::move(name), channel);
+    }
+
+    return options;
+}
+
 bool BLETxView::is_active() const {
     return (bool)is_running;
 }
@@ -259,6 +305,12 @@ void BLETxView::start() {
         return;
     }
 
+    if (auto_channel) {
+        auto_channel_send_count = 0;
+        channel_number = auto_channel_start_number;
+        field_frequency.set_value(get_freq_by_channel_number(channel_number));
+    }
+
     baseband::run_image(portapack::spi_flash::image_tag_btle_tx);
     transmitter_model.enable();
 
@@ -277,6 +329,12 @@ void BLETxView::stop() {
     check_loop.set_value(false);
 
     update_current_packet(packets[0], 0);
+
+    if (auto_channel) {
+        auto_channel_send_count = 0;
+        channel_number = auto_channel_start_number;
+        field_frequency.set_value(get_freq_by_channel_number(channel_number));
+    }
 
     is_running = false;
 }
@@ -299,28 +357,18 @@ void BLETxView::on_tx_progress(const bool done, uint32_t progress) {
         if (is_active()) {
             transmitter_model.disable();
             if (auto_channel) {
-                switch (advCount) {
-                    case 0:
-                        channel_number = 37;
-                        break;
-                    case 1:
-                        channel_number = 38;
-                        break;
-                    case 2:
-                        channel_number = 39;
-                        break;
-                }
+                auto_channel_send_count++;
 
-                field_frequency.set_value(get_freq_by_channel_number(channel_number));
-
-                if (advCount == 3) {
-                    channel_number = 37;
+                if (auto_channel_send_count >= k_ble_total_channel_count) {
+                    auto_channel_send_count = 0;
+                    channel_number = auto_channel_start_number;
+                    field_frequency.set_value(get_freq_by_channel_number(channel_number));
                     packet_counter--;
                     packetDone = true;
-                    advCount = 0;
                 } else {
+                    channel_number = get_next_ble_channel_number(channel_number);
+                    field_frequency.set_value(get_freq_by_channel_number(channel_number));
                     send_packet();
-                    advCount++;
                 }
             } else {
                 packet_counter--;
@@ -376,6 +424,7 @@ BLETxView::BLETxView(NavigationView& nav)
                   &button_switch});
 
     field_frequency.set_step(0);
+    options_channel.set_options(build_channel_options());
 
     ensure_directory(packet_save_path);
 
@@ -385,8 +434,10 @@ BLETxView::BLETxView(NavigationView& nav)
 
     options_channel.on_change = [this](size_t, int32_t i) {
         // If we selected Auto don't do anything and Auto will handle changing.
-        if (i == 40) {
+        if (i == k_ble_auto_channel_value) {
             auto_channel = true;
+            auto_channel_start_number = channel_number;
+            auto_channel_send_count = 0;
             return;
         } else {
             auto_channel = false;
@@ -394,6 +445,8 @@ BLETxView::BLETxView(NavigationView& nav)
 
         field_frequency.set_value(get_freq_by_channel_number(i));
         channel_number = i;
+        auto_channel_start_number = channel_number;
+        auto_channel_send_count = 0;
     };
 
     options_speed.on_change = [this](size_t, int32_t i) {
@@ -402,7 +455,7 @@ BLETxView::BLETxView(NavigationView& nav)
     };
 
     options_speed.set_selected_index(0);
-    options_channel.set_selected_index(3);
+    options_channel.set_selected_index(k_ble_auto_channel_option_index);
 
     check_rand_mac.set_value(false);
     check_rand_mac.on_select = [this](Checkbox&, bool v) {

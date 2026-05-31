@@ -306,21 +306,46 @@ class WM8731 : public audio::Codec {
         });
     }
 
-    void set_wm_headphone_volume(const volume_t volume) {
+    // void set_wm_headphone_volume(const volume_t volume) {
+    //     const auto normalized = headphone_gain_range().normalize(volume);
+    //     auto n = normalized.centibel() / 10;
+
+    //     write(LeftHeadphoneOut{
+    //         .lhpvol = static_cast<reg_t>(n),
+    //         .lzcen = 0,
+    //         .lrhpboth = 1,
+    //         .reserved0 = 0,
+    //     });
+    // }
+
+    bool set_wm_headphone_volume(const volume_t volume) 
+    {
+        
         const auto normalized = headphone_gain_range().normalize(volume);
         auto n = normalized.centibel() / 10;
 
-        write(LeftHeadphoneOut{
+        bool tag =  write(LeftHeadphoneOut{
             .lhpvol = static_cast<reg_t>(n),
             .lzcen = 0,
             .lrhpboth = 1,
             .reserved0 = 0,
         });
+        return tag;
     }
 
-    void set_headphone_volume(const volume_t volume) override {
+
+
+    // void set_headphone_volume(const volume_t volume) override {
+    //     headphone_volume = volume;
+    //     set_wm_headphone_volume(volume);
+    // }
+    
+    /// @brief 修改逻辑带有返回值
+    /// @param volume 
+    /// @return 返回是否将音量设置成功
+    bool set_headphone_volume(const volume_t volume) override {
         headphone_volume = volume;
-        set_wm_headphone_volume(volume);
+        return set_wm_headphone_volume(volume);
     }
 
     volume_range_t headphone_gain_range() const override {
@@ -343,8 +368,8 @@ class WM8731 : public audio::Codec {
         headphone_mute();
     }
 
-    void speaker_enable(){};
-    void speaker_disable(){};
+    void speaker_enable() {};
+    void speaker_disable() {};
     bool speaker_disable_supported() const override {
         return false;
     }
@@ -422,7 +447,7 @@ class WM8731 : public audio::Codec {
 
     void write(const LeftLineIn value);
     void write(const RightLineIn value);
-    void write(const LeftHeadphoneOut value);
+    bool write(const LeftHeadphoneOut value);
     void write(const RightHeadphoneOut value);
     void write(const AnalogAudioPathControl value);
     void write(const DigitalAudioPathControl value);
@@ -430,6 +455,17 @@ class WM8731 : public audio::Codec {
     void write(const DigitalAudioInterfaceFormat value);
     void write(const SamplingControl value);
     void write(const ActiveControl value);
+
+    // bool write(const LeftLineIn value);
+    // bool write(const RightLineIn value);
+    // bool write(const LeftHeadphoneOut value);
+    // bool write(const RightHeadphoneOut value);
+    // bool write(const AnalogAudioPathControl value);
+    // bool write(const DigitalAudioPathControl value);
+    // bool write(const PowerDownControl value);
+    // bool write(const DigitalAudioInterfaceFormat value);
+    // bool write(const SamplingControl value);
+    // bool write(const ActiveControl value);
 };
 
 } /* namespace wm8731 */

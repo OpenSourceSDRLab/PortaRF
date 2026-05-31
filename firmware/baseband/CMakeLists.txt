@@ -492,6 +492,12 @@ set(MODE_CPPSRC
 )
 DeclareTargets(PWTH weather)
 
+### Audio transmit
+set(MODE_CPPSRC
+	proc_audiotx.cpp
+)
+DeclareTargets(PATX audio_tx)
+
 set(MODE_FLAGS "-Os")
 
 ### Flash Utility
@@ -555,6 +561,13 @@ DeclareTargets(PUSB sd_over_usb)
 ### Place external app and disabled images below so they don't get added to the firmware
 set(add_to_firmware FALSE)
 set(MODE_FLAGS "-O3")
+
+### FLEX RX
+
+set(MODE_CPPSRC
+	proc_flex.cpp
+)
+DeclareTargets(PFLX flex)
 
 ### ACARS RX
 
@@ -644,6 +657,13 @@ set(MODE_CPPSRC
 )
 DeclareTargets(PSTX sstvtx)
 
+### SSTV RX
+
+set(MODE_CPPSRC
+	proc_sstvrx.cpp
+)
+DeclareTargets(PSRX sstvrx)
+
 ### TPMS
 
 set(MODE_CPPSRC
@@ -685,10 +705,14 @@ DeclareTargets(PNOA noaaapt_rx)
 
 ### Audio transmit
 
+
+
+### SubCar Decoders
+
 set(MODE_CPPSRC
-	proc_audiotx.cpp
+	proc_subcar.cpp
 )
-DeclareTargets(PATX audio_tx)
+DeclareTargets(PSCD subcar)
 
 
 ### HackRF "factory" firmware

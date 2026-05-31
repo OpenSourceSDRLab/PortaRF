@@ -401,6 +401,31 @@ class DebugMenuView : public BtnGridView {
     void on_populate() override;
 };
 
+
+
+class AudioDiagView : public View 
+{
+public:
+    AudioDiagView(NavigationView& nav);
+    void focus() override;
+    std::string title() const override { return "audio I2C"; };
+
+private:
+    void print_line(const std::string& s);
+
+    // 三个测试动作
+    void test_probe();
+    void test_write_once();
+    void test_stress();
+
+    Console console{{0, 0, 240, 240}};                // 高度缩小，留出按钮区
+    Button button_probe{{0, 244, 80, 24}, "Probe"};
+    Button button_write{{80, 244, 80, 24}, "Write"};
+    Button button_stress{{160, 244, 80, 24}, "Stress"};
+    Button button_done{{80, 272, 80, 24}, "Done"};
+};
+
+
 } /* namespace ui */
 
 #endif /*__UI_DEBUG_H__*/
