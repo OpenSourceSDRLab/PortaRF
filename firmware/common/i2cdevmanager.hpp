@@ -95,7 +95,7 @@ class I2CDevManager {
     static void setEventDispatcher(EventDispatcher* ed) { _eventDispatcher = ed; }
     static EventDispatcher* get_event_dispatcher() { return _eventDispatcher; }
 
-    // true=暂停设备轮询，减少与 Codec 争用
+    // true = pause device polling to reduce contention with the codec
     static void set_pause_updates(bool pause);  
     static bool get_pause_updates();
 

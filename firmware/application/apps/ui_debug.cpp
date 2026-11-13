@@ -629,7 +629,7 @@ void AudioDiagView::test_probe()
 
 void AudioDiagView::test_write_once() 
 {
-    // 交替写不同音量，避免“同值重复写”导致你误判
+    // Write alternating volume levels so repeated writes of the same value cannot mislead the test
     static bool flip = false;
     flip = !flip;
 
@@ -643,7 +643,7 @@ void AudioDiagView::test_write_once()
 
 void AudioDiagView::test_stress() 
 {   
-    // 这里也可以进行设置一下测试
+    // Test settings can also be applied here
     // i2cdev::I2CDevManager::set_pause_updates(true);
     uint32_t ok_cnt = 0;
     uint32_t fail_cnt = 0;
@@ -655,7 +655,7 @@ void AudioDiagView::test_stress()
             ok_cnt++; 
         else 
             fail_cnt++;
-        // 给 I2C 总线一点点时间，避免把系统其它任务饿死
+        // Give the I2C bus a little time so other system tasks are not starved
         chThdSleepMilliseconds(2);
     }
     // i2cdev::I2CDevManager::set_pause_updates(false);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026
+ * Copyright (C) 2026 OpenSourceSDRLab
  *
  * This file is part of PortaPack.
  *
@@ -44,7 +44,7 @@ LowBatteryView::LowBatteryView(NavigationView& nav)
         &button_deep_sleep,
         &text_status});
     
-    // 先只关闭wifi查看效果
+    // For now only turn off Wi-Fi and check the effect
     button_enable_low_power.on_select = [this](Button&) 
     {
         auto dev = static_cast<i2cdev::I2cDev_PPmod*>(
@@ -109,7 +109,7 @@ LowBatteryView::LowBatteryView(NavigationView& nav)
         //     "wake failed");
     };
 
-    // 深度睡眠，唤醒需要搬动开关键 --- 官方低功耗
+    // Deep sleep; wake up by moving the power switch (official low-power mode)
     button_deep_sleep.on_select = [this](Button&) {
 
         auto dev = static_cast<i2cdev::I2cDev_PPmod*>(

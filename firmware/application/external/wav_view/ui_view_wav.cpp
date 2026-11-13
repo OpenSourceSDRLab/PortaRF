@@ -115,16 +115,16 @@ void ViewWavView::on_pos_sample_changed() {
 void ViewWavView::load_wav(std::filesystem::path file_path) {
     uint32_t average;
 
-    // WAV 文件地址
+    // WAV file path
     wav_file_path = file_path;
 
-    // 展示文件名称
+    // Show the file name
     text_filename.set(file_path.filename().string());
 
-    // 预计播放的的总时长
+    // Expected total playing time
     auto ms_duration = wav_reader->ms_duration();
     text_duration.set(unit_auto_scale(ms_duration, 2, 3) + "s");
-    // 文件从头开始
+    // Start from the beginning of the file
     wav_reader->rewind();
 
 
@@ -134,7 +134,7 @@ void ViewWavView::load_wav(std::filesystem::path file_path) {
 
     // Fill amplitude buffer, world's worst downsampling
 
-    // 绘制波形图
+    // Draw the waveform
     uint64_t skip = wav_reader->sample_count() / (screen_width * subsampling_factor);
     uint8_t bits_per_sample = wav_reader->bits_per_sample();
 
@@ -157,7 +157,7 @@ void ViewWavView::load_wav(std::filesystem::path file_path) {
         amplitude_buffer[i] = average / subsampling_factor;
     }
 
-    // 重置控制操作
+    // Reset the controls
     reset_controls();
     update_scale(1);
 }
@@ -260,7 +260,7 @@ void ViewWavView::start_playback() {
 
     audio::output::start();
 
-    // 主动设置音量到当前UI显示的值
+    // Set the volume to the value currently shown in the UI
     receiver_model.set_normalized_headphone_volume(field_volume.value());
     field_volume.set_value(field_volume.value());
 }
@@ -289,9 +289,9 @@ ViewWavView::ViewWavView(
         &text_title,
         &text_duration,
         &text_bits_per_sample,
-        // 用于文件加载
+        // Used to load files
         &button_open,
-        // 用于文件播放
+        // Used to play files
         &button_play,
         &waveform,
         &progressbar,
@@ -308,25 +308,25 @@ ViewWavView::ViewWavView(
     reset_controls();
 
     button_open.on_select = [this, &nav](Button&) {
-        // 加载WAV格式文件
+        // Load a WAV file
         auto open_view = nav.push<FileLoadView>(".WAV");
-        // 当加载的页面变化
+        // When the loaded page changes
         open_view->on_changed = [this, &nav](std::filesystem::path file_path) {
             // Can't show new dialogs in an on_changed handler, so use continuation.
             nav.set_on_pop([this, &nav, file_path]() 
             {
-                // 打开WAV格式文件并且加载文件信息
+                // Open a WAV file and load its information
                 if (!wav_reader->open(file_path)) {
                     file_error();
                     return;
                 }
-                // 如果格式不匹配就展示了
+                // Show it if the format does not match
                 if ((wav_reader->channels() != 1) || ((wav_reader->bits_per_sample() != 8) && (wav_reader->bits_per_sample() != 16))) {
                     nav_.display_modal("Error", "Wrong format.\nWav viewer only accepts\n8 or 16-bit mono files.");
                     return;
                 
                 }
-                // 加载WAV波形图片
+                // Load the WAV waveform image
                 load_wav(file_path);
 
                 field_pos_seconds.focus();
@@ -343,7 +343,7 @@ ViewWavView::ViewWavView(
         }    
         else
         {
-            // 开启播放
+            // Start playback
             start_playback();
             
         }

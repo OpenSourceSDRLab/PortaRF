@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026
+ * Copyright (C) 2026 OpenSourceSDRLab
  *
  * This file is part of PortaPack.
  *

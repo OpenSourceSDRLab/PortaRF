@@ -43,7 +43,7 @@ namespace ui::external_app::mp3player_sd  {
             &text_current,
             &text_debug,
             &menu_view,
-            // 这个点击会图标
+            // Clicking this changes the icon
             &button_start,
             &voltext,
             &field_volume,
@@ -62,14 +62,14 @@ namespace ui::external_app::mp3player_sd  {
 
         menu_view.set_parent_rect({0, UI_POS_Y(2), UI_POS_MAXWIDTH, UI_POS_HEIGHT_REMAINING(7)});
 
-        // 没有sd卡就退出
+        // Exit if there is no SD card
         if (!sdcIsCardInserted(&SDCD1)) {
             text_current.set("NO SD CARD!");
             return;
         }
 
         load_directory_contents();
-        // 当前列表没有数据
+        // The current list is empty
         if (!entry_list.size()) {
             text_current.set("EMPTY SD CARD!");
         }
@@ -90,20 +90,20 @@ namespace ui::external_app::mp3player_sd  {
             };
         }
 
-        // 设置主页面的焦点函数
+        // Set the focus function of the main page
         menu_view.on_highlight = [this]() {
             uint32_t idx = menu_view.highlighted_index();
             // std::string tmp = "menu_view.on_highlight value is" + std::to_string(idx);
             // text_debug.set(tmp);
             
-            // 当menu_view高亮变化时，重绘所有text组件以防止被覆盖
+            // When the menu_view highlight changes, redraw all text widgets so they are not overwritten
             reflash_special_widget();
             
         };
 
         refresh_list();
 
-        // 设置menu item点击函数事件
+        // Set the menu item click handler
         on_select_entry = [this](KeyEvent key) {
             if (key == KeyEvent::Select) {
                 const music_file_entry tmp = get_selected_entry();
@@ -129,7 +129,7 @@ namespace ui::external_app::mp3player_sd  {
 
         button_start.on_select = [this]() {
             
-            // 如果已经打开就关闭
+            // Close it if it is already open
             if((bool)replay_thread)
             {
                 stop();
@@ -139,7 +139,7 @@ namespace ui::external_app::mp3player_sd  {
             const music_file_entry tmp = get_selected_entry();
             std::string debug_string;
             
-            // 加载文件阅览器
+            // Load the file viewer
             auto reader = std::make_unique<WAVFileReader>();
             stop();
             if (!reader->open("/mp3/"+tmp.path)) {
@@ -189,7 +189,7 @@ namespace ui::external_app::mp3player_sd  {
             audio::output::start();
             std::string tmp_s = "playing music "+tmp.path;
             play_info.set(tmp_s);
-            // 设置当前音量
+            // Set the current volume
             receiver_model.set_normalized_headphone_volume(75);
         };
     }
@@ -229,21 +229,21 @@ namespace ui::external_app::mp3player_sd  {
         button_start.focus();
     }
 
-    // 完全模拟ui_fileman实现
+    // Implemented exactly like ui_fileman
     void mp3player_sd::load_directory_contents()
     {
-        // 设置当前页面名称
+        // Set the current page name
         text_current.set(current_path.string());
         entry_list.clear();
         menu_view.clear();
         // Collect all entries first
         std::list<music_file_entry> all_entries;
-        // 将文件数据放置在
+        // Place the file data in
         for (const auto& entry : std::filesystem::directory_iterator(current_path, u"*"))
         {
             all_entries.push_back({entry.path().string(), 1});
         }
-        // 计算当前有多少页
+        // Calculate the number of pages
         nb_pages = (all_entries.size() + items_per_page - 1) / items_per_page;
         if (nb_pages == 0) 
             nb_pages = 1;
@@ -270,7 +270,7 @@ namespace ui::external_app::mp3player_sd  {
 
     void mp3player_sd::refresh_list()
     {
-        // 这个set_dirty很关键，需要进行重新渲染
+        // This set_dirty call is essential: it forces a redraw
         set_dirty();
         int32_t prev_highlight = menu_view.highlighted_index();
         menu_view.clear();
@@ -317,25 +317,25 @@ namespace ui::external_app::mp3player_sd  {
 
     void mp3player_sd::on_focus()
     {
-        View::on_focus();  // 必须先调用基类方法！
-        // 标记整个view为dirty
+        View::on_focus();  // The base class method must be called first!
+        // Mark the whole view as dirty
         set_dirty();
-        // 当mp3player获得焦点时，重绘所有控件
+        // Redraw all widgets when mp3player gains focus
         reflash_special_widget();
     }
     
     void mp3player_sd::on_blur()
     {
         View::on_blur();
-        // 当mp3player失去焦点时，也重绘所有控件
+        // Also redraw all widgets when mp3player loses focus
         reflash_special_widget();
     }
 
     void mp3player_sd::paint(Painter& painter)
     {
-        // 先调用基类paint绘制背景
+        // Call the base class paint first to draw the background
         View::paint(painter);
-        // 重绘所有子控件
+        // Redraw all child widgets
         reflash_special_widget();
     }
 

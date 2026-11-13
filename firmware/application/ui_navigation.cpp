@@ -64,9 +64,9 @@
 #include "ui_battinfo.hpp"
 #include "ui_external_items_menu_loader.hpp"
 
-// 添加一个mp3播放器
+// Add an MP3 player
 #include "ui_mp3player.hpp"
-// 一个有关I2C升级控件
+// An I2C update widget
 #include "ui_esp32update.hpp"
 
 #include "ais_app.hpp"
@@ -168,8 +168,8 @@ const NavigationView::AppMap NavigationView::appMap = generate_app_map(Navigatio
 
 bool NavigationView::StartAppByName(const char* name) {
     home(false);
-    // 根据实际ID进行查找
-    // 比如audip
+    // Look up by the actual ID
+    // e.g. audio
     auto it = appMap.find(name);
     if (it != appMap.end()) {
         push_view(std::unique_ptr<View>(it->second.viewFactory->produce(*this)));
@@ -183,12 +183,12 @@ bool NavigationView::StartAppByName(const char* name) {
 bool NavigationView::StartAppByNameWithMulitArgs(const char* name,int arg_len,char* args[])
 {
     home(false);
-    // 寻找对应的app
+    // Find the matching app
     auto it = appMap.find(name);
-    // 找到了这个app
+    // Found the app
     if (it != appMap.end()) {
         std::unique_ptr<View> view = std::unique_ptr<View>(it->second.viewFactory->produce(*this));
-        // 这里后续需要添加switch case，现在是测试阶段，所以简单的使用
+        // A switch/case is needed here later; this is the test stage, so keep it simple
         if(strcmp(name,"audio")==0)
         {
             
@@ -199,12 +199,12 @@ bool NavigationView::StartAppByNameWithMulitArgs(const char* name,int arg_len,ch
         }
         else
         {
-            // 转移所有权
+            // Transfer ownership
             push_view(std::move(view));
         }
         return true;
     }
-    // 没有找到就返回false
+    // Return false if not found
     return false;
 }
 

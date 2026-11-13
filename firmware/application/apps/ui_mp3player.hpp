@@ -6,14 +6,14 @@
 
 #include "baseband_api.hpp"
 #include "replay_thread.hpp"
-#include "ui_receiver.hpp"      // AudioVolumeField 定义
-#include "receiver_model.hpp"   // receiver_model 声明
+#include "ui_receiver.hpp"      // AudioVolumeField definition
+#include "receiver_model.hpp"   // receiver_model declaration
 
 namespace ui
 {
     struct music_file_entry {
         std::string path{};
-        // 文件类型 0表示 MAV 1表示MP3
+        // File type: 0 = WAV, 1 = MP3
         int type;
     };
 
@@ -24,39 +24,39 @@ namespace ui
         std::string title() const override { return "mp3 player"; }; // App title
         ~mp3player();
 
-        // 当前mp3的信息
+        // Information on the current MP3
         std::list<music_file_entry> entry_list{};
-        // 指向当前路径
+        // Points to the current path
         std::filesystem::path current_path{u"/mp3"};
-        // 加载当前
+        // Load the current
         void load_directory_contents();
-        // 刷新当前menu view 列表
+        // Refresh the current menu view list
         void refresh_list();
-        // 分页数量
+        // Number of pages
         uint8_t nb_pages = 1;
-        // 每页显示的元素个数
+        // Items shown per page
         static constexpr size_t items_per_page = 8;
-        // 当前页面
+        // Current page
         uint8_t pagination = 0;
-        // 返回按钮
+        // Back button
         const std::string str_back{"<--"};
-        // 前进按钮
+        // Forward button
         const std::string str_next{"-->"};
-        // 选择当前页面
+        // Select the current page
         const music_file_entry& get_selected_entry() const;
-        // 设置当前页面焦点
+        // Set the focus of the current page
         void focus() override;
         void on_focus() override;
         void on_blur() override;
         void paint(Painter& painter) override; 
-        // 回调函数必须常驻内存
+        // The callback must stay resident in memory
         std::function<void(KeyEvent)> on_select_entry{nullptr};
 
-        // 发送给tx baseband的文件传输线程
+        // File transfer thread feeding the TX baseband
         std::unique_ptr<ReplayThread> replay_thread{};
-        // 读取缓冲区大小
+        // Read buffer size
         const size_t read_size{2048};
-        // 读取缓冲区个数
+        // Number of read buffers
         const size_t buffer_count{3};
         bool ready_signal{false};
         void on_playback_progress(const uint32_t progress);
@@ -81,7 +81,7 @@ namespace ui
             "Path:", 
             Theme::getInstance()->fg_light->foreground}
         };
-        // 显示当前路径
+        // Show the current path
         Text text_current{
             {
                 UI_POS_X(6), UI_POS_Y(0), UI_POS_WIDTH_REMAINING(6), UI_POS_HEIGHT(1)
@@ -99,7 +99,7 @@ namespace ui
             {UI_POS_X(0), UI_POS_Y_BOTTOM(10), screen_width, 8}
         };
 
-        // 这里显示一些读取文件的参数 channel hz
+        // Show some parameters of the file being read (channel, Hz)
         Labels music_hz_label{
         {
             {UI_POS_X(0), UI_POS_Y_BOTTOM(9)}, 
@@ -158,7 +158,7 @@ namespace ui
             "not playing",
         };
 
-        // 显示文件列表，可以多创建一些文件测试一下分页
+        // Show the file list; create more files to test paging
         MenuView menu_view{
             {0, UI_POS_Y(2), UI_POS_MAXWIDTH,UI_POS_HEIGHT(10)},
             true

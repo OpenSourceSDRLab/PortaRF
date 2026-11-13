@@ -12,7 +12,7 @@ namespace ui
 
     esp32Update::esp32Update(NavigationView &nav) // Application Main
     {
-        // 添加
+        // Added
         add_children({// Add pointers for widgets
             &button_helloWorld,
             &button_get_all_dev,
@@ -23,13 +23,13 @@ namespace ui
 
         button_helloWorld.on_select = [this](Button &)
         {
-            // 取得当前PPMOD设备的信息
+            // Get information on the current PPmod device
             get_ppmod_device_info();
         };
 
         button_get_all_dev.on_select = [this](Button &)
         {
-            // 取得当前PPMOD设备的信息
+            // Get information on the current PPmod device
             get_all_info();
         };       
     }
@@ -40,22 +40,22 @@ namespace ui
         char addr_list_val[128]="\0";
         auto addr_list = i2cdev::I2CDevManager::get_gev_list_by_addr();
     
-        // 遍历每个设备
+        // Iterate over each device
         for (size_t i = 0; i < addr_list.size(); ++i) {
             uint8_t addr = addr_list[i];
             
-            // 通过地址获取设备对象
+            // Get the device object by address
             auto dev = i2cdev::I2CDevManager::get_dev_by_addr(addr);
             
             if (dev) 
             {
                 snprintf(&addr_list_val[strlen(addr_list_val)],128-strlen(addr_list_val),"%d:",addr);
-                // // 获取设备模型
+                // // Get the device model
                 I2C_DEVMDL model = dev->model;
-                // // 获取其他信息
+                // // Get other information
                 uint8_t query_interval = dev->get_update_interval();
 
-                // 根据设备类型进行不同的处理
+                // Handle each device type differently
                 switch (model) 
                 {
                     case I2C_DEVMDL::I2CDECMDL_PPMOD: {
@@ -63,39 +63,39 @@ namespace ui
                         // auto ppmod_dev = (i2cdev::I2cDev_PPmod*)dev;
                         // auto device_info = ppmod_dev->readDeviceInfo();
                         // if (device_info.has_value()) {
-                        //     // 处理 ESP32 AI 开发板或其他 PPmod 设备
-                        //     // device_info->module_name, module_version 等
+                        //     // Handle the ESP32 AI board or other PPmod devices
+                        //     // device_info->module_name, module_version, etc.
                         // }
                         break;
                     }
                     case I2C_DEVMDL::I2CDEVMDL_MAX17055:
                     {
                         snprintf(&addr_list_val[strlen(addr_list_val)],128-strlen(addr_list_val),"battery,");
-                        // 处理电池管理芯片
+                        // Handle the battery management chip
                         break;
                     }
                         
                     case I2C_DEVMDL::I2CDEVMDL_SHT3X:
                     {
                         snprintf(&addr_list_val[strlen(addr_list_val)],128-strlen(addr_list_val),"humiture,");
-                        // 处理温湿度传感器
+                        // Handle the temperature/humidity sensor
                         break;
                     }
                         
                     case I2C_DEVMDL::I2CDEVMDL_NOTSET:
                     {
                         snprintf(&addr_list_val[strlen(addr_list_val)],128-strlen(addr_list_val),"unknown,");
-                        // 未识别的设备（有地址但没有驱动）
+                        // Unrecognised device (has an address but no driver)
                         break;
                     }
                         
-                    // ... 其他设备类型
+                    // ... other device types
                 }
             } 
             else 
             {
-                // 有地址但没有驱动程序的设备（可能是未支持的设备）
-                // 地址: addr
+                // Device with an address but no driver (possibly unsupported)
+                // Address: addr
                 snprintf(&addr_list_val[strlen(addr_list_val)],128-strlen(addr_list_val),"nd:%d,",addr);
             }
         }
@@ -110,7 +110,7 @@ namespace ui
         auto dev = (i2cdev::I2cDev_PPmod*)i2cdev::I2CDevManager::get_dev_by_model(I2C_DEVMDL::I2CDECMDL_PPMOD);
         if (!dev) {
             text_module_name.set("not connection");
-            return;  // 设备未连接
+            return;  // Device not connected
         }
 
         auto device_info = dev->readDeviceInfo();
@@ -126,19 +126,19 @@ namespace ui
         }
         uint64_t features_mask = dev->get_features_mask();
         
-        // 这里是esp32 shell通信
+        // ESP32 shell communication
         if (features_mask & (uint64_t)SupportedFeatures::FEAT_SHELL) 
         {
             uint16_t shell_bytes = dev->get_shell_buffer_bytes();
             if (shell_bytes > 0) {
-                uint8_t buff[65];  // 64字节数据 + 1字节标志
+                uint8_t buff[65];  // 64 bytes of data + 1 flag byte
                 if (dev->get_shell_get_buffer_data(buff, 65))
                 {
-                    // buff[0] 的第1位是 has_more 标志，低7位是数据大小
+                    // Bit 7 of buff[0] is the has_more flag, the low 7 bits are the data size
                     bool has_more = buff[0] & 0x80;
                     size_t data_size = buff[0] & 0x7F;
-                    // 实际数据在 buff[1] 到 buff[data_size]
-                    // 这里可以解析 ESP32 AI 的自定义数据
+                    // The actual data is in buff[1] to buff[data_size]
+                    // Custom data from the ESP32 AI board can be parsed here
                 }
             }
         }

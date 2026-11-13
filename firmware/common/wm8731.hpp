@@ -340,9 +340,9 @@ class WM8731 : public audio::Codec {
     //     set_wm_headphone_volume(volume);
     // }
     
-    /// @brief 修改逻辑带有返回值
+    /// @brief Changed to return a value
     /// @param volume 
-    /// @return 返回是否将音量设置成功
+    /// @return whether the volume was set successfully
     bool set_headphone_volume(const volume_t volume) override {
         headphone_volume = volume;
         return set_wm_headphone_volume(volume);

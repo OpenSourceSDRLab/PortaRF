@@ -432,7 +432,7 @@ class SystemMenuView : public BtnGridView {
     void hackrf_mode(NavigationView& nav);
 };
 
-// 相当于整个主页面
+// Equivalent to the whole main page
 class SystemView : public View {
    public:
     SystemView(
@@ -449,13 +449,13 @@ class SystemView : public View {
 
    private:
     uint8_t overlay_active{0};
-    // 顶部的窗体
+    // Top window
     SystemStatusView status_view{navigation_view};
-    // 底部的窗体
+    // Bottom window
     InformationView info_view{navigation_view};
-    // DFU按键显示的窗体
+    // Window shown for the DFU button
     DfuMenu overlay{navigation_view};
-    // DFU按键显示的窗体
+    // Window shown for the DFU button
     DfuMenu2 overlay2{navigation_view};
 
     NavigationView navigation_view{};

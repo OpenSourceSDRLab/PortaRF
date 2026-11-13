@@ -413,12 +413,12 @@ public:
 private:
     void print_line(const std::string& s);
 
-    // 三个测试动作
+    // Three test actions
     void test_probe();
     void test_write_once();
     void test_stress();
 
-    Console console{{0, 0, 240, 240}};                // 高度缩小，留出按钮区
+    Console console{{0, 0, 240, 240}};                // Reduced height to leave room for the buttons
     Button button_probe{{0, 244, 80, 24}, "Probe"};
     Button button_write{{80, 244, 80, 24}, "Write"};
     Button button_stress{{160, 244, 80, 24}, "Stress"};

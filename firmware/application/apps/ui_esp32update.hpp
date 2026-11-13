@@ -12,7 +12,7 @@ namespace ui
         std::string title() const override { return "esp32 update"; }; // App title
 
     private:
-        // 测试按钮获取I2C设备的状态
+        // Test button: read the status of the I2C devices
         Button button_helloWorld
         {
             {UI_POS_X(0), UI_POS_Y_BOTTOM(5), 100, UI_POS_HEIGHT(2)},
@@ -50,7 +50,7 @@ namespace ui
         void get_ppmod_device_info();
         void update();                                            // Function declaration
 
-        // 这里如何接收来自ppmod的数据呢？
+        // How should data from the PPmod be received here?
         MessageHandlerRegistration message_handler_update{        // Example, not required: MessageHandlerRegistration class
             Message::ID::DisplayFrameSync,                        // relays messages to your app code from baseband. Every time you 
             [this](const Message *const) {                        // get a  DisplayFrameSync message the update() function will

@@ -654,27 +654,27 @@ static void cmd_appstart(BaseSequentialStream* chp, int argc, char* argv[]) {
     (void)argc;
     (void)argv;
 
-    // 这里如果没有指定APP名字就无法继续运行
-    // 现在想要处理多参数的情况
+    // Cannot continue without an app name
+    // Handle multiple parameters
     // if (argc != 1) {
     if (argc < 1) {
         chprintf(chp, "Usage: appstart APPCALLNAME");
         return;
     }
-    // 获取到顶层app
+    // Get the top-level app
     auto evtd = getEventDispatcherInstance();
-    // UI循环时间没有实例的话就返回即可
+    // Return if there is no instance during the UI loop
     if (!evtd) 
         return;
-    // 取得顶层APP
+    // Get the top-level app
     auto top_widget = evtd->getTopWidget();
-    // 没有顶层APP
+    // No top-level app
     if (!top_widget) 
         return;
     auto nav = static_cast<ui::SystemView*>(top_widget)->get_navigation_view();
     if (!nav) 
         return;
-    // 这里是开启APP的环节
+    // Start the app here
     if(argc == 1)
     {
         if (nav->StartAppByName(argv[0])) {

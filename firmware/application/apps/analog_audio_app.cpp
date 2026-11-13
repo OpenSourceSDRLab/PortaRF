@@ -555,7 +555,7 @@ void AnalogAudioView::on_freqchg(int64_t freq) {
     field_frequency.set_value(freq);
 }
 
-// 增加此处代码是为了与拓展板进行语音交互
+// Added for voice interaction with the extension board
 void AnalogAudioView::public_for_on_freqchg(int64_t value)
 {
     on_freqchg(value);

@@ -44,10 +44,10 @@ std::vector<I2DevListElement> I2CDevManager::devlist;
 Mutex I2CDevManager::mutex_list{};
 EventDispatcher* I2CDevManager::_eventDispatcher;
 
-// 增添部分代码解决I2C冲突问题
+// Added code to resolve I2C conflicts
 bool I2CDevManager::pause_updates = false;
 
-// 添加实现：
+// Added implementation:
 void I2CDevManager::set_pause_updates(bool pause) {
     pause_updates = pause;
 }
@@ -329,7 +329,7 @@ void I2CDevManager::create_thread() {
     thread = chThdCreateFromHeap(NULL, 2048, NORMALPRIO, I2CDevManager::timer_fn, nullptr);
 }
 
-/// @brief source code用于处理 I2C设备的扫描
+/// @brief Source code for scanning I2C devices
 /// @param arg 
 /// @return 
 // msg_t I2CDevManager::timer_fn(void* arg) {

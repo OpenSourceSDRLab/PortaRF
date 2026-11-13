@@ -221,7 +221,7 @@ class AnalogAudioView : public View {
 
     uint8_t get_previous_zoom_option();
     void set_previous_zoom_option(uint8_t zoom);
-    // 添加此处为了语音交互
+    // Added for voice interaction
     void public_for_on_freqchg(int64_t value);
 
    private:
@@ -262,7 +262,7 @@ class AnalogAudioView : public View {
     Audio audio{
         {UI_POS_X(21), 10, UI_POS_WIDTH_REMAINING(21) - UI_POS_WIDTH(2), 4}};
 
-    // 这里是修改具体值？
+    // Is this where the actual value is changed?
     RxFrequencyField field_frequency{
         {UI_POS_X(5), UI_POS_Y(0)},
         nav_};
@@ -319,7 +319,7 @@ class AnalogAudioView : public View {
 
     void handle_coded_squelch(uint32_t value);
 
-    // 这里是修改具体数值的地方吗？
+    // Is this where the actual value is changed?
     void on_freqchg(int64_t freq);
 
     MessageHandlerRegistration message_handler_coded_squelch{
